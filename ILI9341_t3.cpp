@@ -916,6 +916,48 @@ void ILI9341_t3::begin(void)
 }
 
 
+uint16_t ILI9341_t3::printSingleLine(const char *txt, uint16_t max) {
+    uint16_t measured = measureTextWidth(txt);
+    if (measured <= max) {
+        print(txt);
+    } else {
+        uint16_t chars = strlen(txt);
+        while (measured > max) {
+            chars--;
+            if (chars == 0) {
+                return 0;
+            }
+            measured = measureTextWidth(txt, chars);
+        }
+        if (txt[chars - 1] == ' ') {
+            chars--;
+            measured = measureTextWidth(txt, chars);
+        }
+        printf("%.*s", chars, txt);
+    }
+    return measured;
+}
+
+uint16_t ILI9341_t3::textLengthUnder(const char *txt, uint16_t max) {
+    uint16_t measured = measureTextWidth(txt);
+    if (measured > max) {
+        uint16_t chars = strlen(txt);
+        while (measured > max) {
+            chars--;
+            if (chars == 0) {
+                return 0;
+            }
+            measured = measureTextWidth(txt, chars);
+        }
+        if (txt[chars - 1] == ' ') {
+            chars--;
+            measured = measureTextWidth(txt, chars);
+        }
+    }
+    return measured;
+}
+
+
 
 
 /*

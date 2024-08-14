@@ -185,7 +185,7 @@ class ILI9341_t3 : public Print
   public:
 	ILI9341_t3(uint8_t _CS, uint8_t _DC, uint8_t _RST = 255, uint8_t _MOSI=11, uint8_t _SCLK=13, uint8_t _MISO=12);
 	void begin(void);
-  	void sleep(bool enable);		
+  	void sleep(bool enable);
         void setClock(unsigned long clk) { _clock = clk;}
 	void pushColor(uint16_t color);
 	void fillScreen(uint16_t color);
@@ -193,7 +193,7 @@ class ILI9341_t3 : public Print
 	void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 	void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 	void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-			
+
 	void fillRectHGradient(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color1, uint16_t color2);
 	void fillRectVGradient(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color1, uint16_t color2);
 	void fillScreenVGradient(uint16_t color1, uint16_t color2);
@@ -223,7 +223,7 @@ class ILI9341_t3 : public Print
 		g = (color>>3)&0x00FC;
 		b = (color<<3)&0x00F8;
 	}
-	
+
 	//color565toRGB14		- converts 16 bit 565 format color to 14 bit RGB (2 bits clear for math and sign)
 	//returns 00rrrrr000000000,00gggggg00000000,00bbbbb000000000
 	//thus not overloading sign, and allowing up to double for additions for fixed point delta
@@ -232,13 +232,13 @@ class ILI9341_t3 : public Print
 		g = (color<<3)&0x3F00;
 		b = (color<<9)&0x3E00;
 	}
-	
+
 	//RGB14tocolor565		- converts 14 bit RGB back to 16 bit 565 format color
 	static uint16_t RGB14tocolor565(int16_t r, int16_t g, int16_t b)
 	{
 		return (((r & 0x3E00) << 2) | ((g & 0x3F00) >>3) | ((b & 0x3E00) >> 9));
 	}
-	
+
 	//uint8_t readdata(void);
 	uint8_t readcommand8(uint8_t reg, uint8_t index = 0);
 	uint16_t readScanLine();
@@ -258,18 +258,22 @@ class ILI9341_t3 : public Print
 	//					color palette data in array at palette
 	//					width must be at least 2 pixels
 	void writeRect4BPP(int16_t x, int16_t y, int16_t w, int16_t h, const uint8_t *pixels, const uint16_t * palette );
-	
+
 	// writeRect2BPP - 	write 2 bit per pixel paletted bitmap
-	//					bitmap data in array at pixels, 4 bits per pixel
+	//					bitmap data in array at pixels, 2 bits per pixel
 	//					color palette data in array at palette
 	//					width must be at least 4 pixels
 	void writeRect2BPP(int16_t x, int16_t y, int16_t w, int16_t h, const uint8_t *pixels, const uint16_t * palette );
-	
+
 	// writeRect1BPP - 	write 1 bit per pixel paletted bitmap
-	//					bitmap data in array at pixels, 4 bits per pixel
+	//					bitmap data in array at pixels, 1 bits per pixel
 	//					color palette data in array at palette
 	//					width must be at least 8 pixels
 	void writeRect1BPP(int16_t x, int16_t y, int16_t w, int16_t h, const uint8_t *pixels, const uint16_t * palette );
+
+
+    uint16_t printSingleLine(const char *txt, uint16_t max);
+    uint16_t textLengthUnder(const char *txt, uint16_t max);
 
 	// from Adafruit_GFX.h
 	void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
@@ -405,7 +409,7 @@ class ILI9341_t3 : public Print
 				waitTransmitComplete();
 				if (requested_tcr_state & LPSPI_TCR_PCS(3)) DIRECT_WRITE_HIGH(_dcport, _dcpinmask);
 				else DIRECT_WRITE_LOW(_dcport, _dcpinmask);
-				IMXRT_LPSPI4_S.TCR = _spi_tcr_current & ~(LPSPI_TCR_PCS(3) | LPSPI_TCR_CONT);	// go ahead and update TCR anyway?  
+				IMXRT_LPSPI4_S.TCR = _spi_tcr_current & ~(LPSPI_TCR_PCS(3) | LPSPI_TCR_CONT);	// go ahead and update TCR anyway?
 
 			}
 		}
@@ -413,7 +417,7 @@ class ILI9341_t3 : public Print
 
 	void beginSPITransaction(uint32_t clock = ILI9341_SPICLOCK) __attribute__((always_inline)) {
 		SPI.beginTransaction(SPISettings(clock, MSBFIRST, SPI_MODE0));
-		if (!_dcport) _spi_tcr_current = IMXRT_LPSPI4_S.TCR; 	// Only if DC is on hardware CS 
+		if (!_dcport) _spi_tcr_current = IMXRT_LPSPI4_S.TCR; 	// Only if DC is on hardware CS
 		if (_csport)
 			DIRECT_WRITE_LOW(_csport, _cspinmask);
 	}
@@ -465,7 +469,7 @@ class ILI9341_t3 : public Print
 	}
 
 #else
-// T3.x	
+// T3.x
 	//void waitFifoNotFull(void) __attribute__((always_inline)) {
 	void waitFifoNotFull(void) {
 		uint32_t sr;
